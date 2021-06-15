@@ -1,13 +1,14 @@
 
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
+import TextEditor from "./components/TextEditor";
 const App = () => {
   return (
-      <BrowserRouter>
+    <BrowserRouter>
       <div className="app">
-    Hello
+        <TextEditor />
       </div>
-      </BrowserRouter> 
+    </BrowserRouter>
   );
 };
 
