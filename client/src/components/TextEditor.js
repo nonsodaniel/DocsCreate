@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+import { io } from "socket.io-client";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 const toolBarOption = [
@@ -12,6 +13,14 @@ const toolBarOption = [
   ["clean"],
 ];
 const TextEditor = () => {
+useEffect(() => {
+  const socket = io("http://localhost:4000");
+
+  return () => {
+    socket.disconnect();
+  };
+}, []);
+
   const wrapperRef = useCallback((wrapper) => {
     if (wrapper == null) return;
 
