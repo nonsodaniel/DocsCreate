@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
@@ -13,13 +13,9 @@ const toolBarOption = [
   ["clean"],
 ];
 const TextEditor = () => {
-useEffect(() => {
-  const socket = io("http://localhost:4000");
+  const [socket, setSocket] = useState();
+  const [quill, setQuill] = useState();
 
-  return () => {
-    socket.disconnect();
-  };
-}, []);
 
   const wrapperRef = useCallback((wrapper) => {
     if (wrapper == null) return;
@@ -27,13 +23,45 @@ useEffect(() => {
     wrapper.innerHTML = "";
     const editor = document.createElement("div");
     wrapper.append(editor);
-    new Quill(editor, {
-      theme: "snow",
-      modules: {
-        toolbar: toolBarOption,
-      },
-    });
+   const q = new Quill(editor, {
+     theme: "snow",
+     modules: {
+       toolbar: toolBarOption,
+     },
+   });
+    setQuill(q);
   }, []);
+
+  useEffect(() => {
+    const s = io("http://localhost:4000");
+    setSocket(s);
+    return () => {
+      s.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if(socket == null || quill == null) return 
+    const handler =  (delta, oldDelta, source ) =>{
+      if(source !== 'user') return;
+      socket.emit("send-changes", delta)
+    } 
+    quill.on('text-change',handler)
+    return () =>{
+      quill.off("text-change", handler)
+    }
+  }, [socket, quill])
+ 
+  useEffect(() => {
+    if(socket == null || quill == null) return 
+    const handler = (delta) =>{
+      quill.updateContents(delta)
+    }
+    socket.on("receive-changes", handler);
+    return () =>{
+      socket.off("receive-changes", handler)
+    }
+  }, [socket, quill])
   return (
     <div className="container" ref={wrapperRef}>
       Hello
