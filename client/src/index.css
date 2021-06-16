@@ -30,6 +30,10 @@
     border: none;
     box-shadow: 0 0 5px 0 rgba(0,0,0,.5);
   }
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+   display: flex;
+   justify-content: center;
+}
 
   @media print{
     body{

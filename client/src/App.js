@@ -5,18 +5,17 @@ import TextEditor from "./components/TextEditor";
 import {v4 as uuidV4} from 'uuid'
 const App = () => {
   return (
-    <BrowserRouter>
+
+ 
+          <BrowserRouter>
     <Switch>
-    <div className="app">
         <Route path="/" exact>
-        <Redirect to={`/documents/${uuidV4()}`} />
+        <Redirect to={`/document/${uuidV4()}`} />
         </Route>
 
-        <Route path="/documents/:id">
+        <Route path="/document/:id">
           <TextEditor />
         </Route>
-
-      </div>
     </Switch>
       
     </BrowserRouter>
